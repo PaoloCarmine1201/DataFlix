@@ -1,0 +1,14 @@
+
+
+<!DOCTYPE html> 
+<html> 
+    <head> 
+        <title>Entries</title> 
+    </head> 
+    <body> 
+        <h1>Tutte le entry del database</h1> 
+        <ul> {% for entry in entries %} 
+            <li>{{ entry }}
+            </li> {% endfor %} </ul> 
+    </body> 
+</html>
