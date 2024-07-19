@@ -21,6 +21,12 @@ class DataCleaning:
         plt.xticks(rotation=45)
         plt.show()
 
+    def plot_null_distribution(self):
+        plt.figure(figsize=(12, 8))
+        sns.heatmap(self.df.isnull(), cbar=False, cmap='viridis')
+        plt.title('Distribuzione dei Valori Nulli')
+        plt.show()
+
     def drop_nulls(self):
         self.df = self.df.dropna()
         return self.df
@@ -45,6 +51,9 @@ def main():
     null_counts = cleaner.count_nulls()
     print("Null values per column:")
     print(null_counts)
+
+    cleaner.plot_nulls()
+    cleaner.plot_null_distribution()
 
 if __name__ == '__main__':
     main()
