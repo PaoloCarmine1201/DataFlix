@@ -1,9 +1,6 @@
-from flask import Flask, render_template
-import service.db_connection as db
-import service.query_manager as manager
-from pymongo import MongoClient
+from app import create_app
 
-app = Flask(__name__)
+app = create_app()
 
 if __name__ == '__main__':
     app.run(debug=True)
