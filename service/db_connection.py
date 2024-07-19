@@ -8,5 +8,4 @@ db = client['dataflix']
 collection = db['dataflix']
 
 def connection():
-    entries = list(collection.find())
-    return entries
+    return collection
