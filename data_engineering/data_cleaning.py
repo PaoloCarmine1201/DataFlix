@@ -13,18 +13,25 @@ class DataCleaning:
 
     def plot_nulls(self):
         null_counts = self.count_nulls()
+
         plt.figure(figsize=(10, 6))
         sns.barplot(x=null_counts.index, y=null_counts.values)
-        plt.title('Number of Null Values per Column')
-        plt.ylabel('Number of Null Values')
-        plt.xlabel('Columns')
+        plt.title('Numero Di Valori Null Per Colonna')
+        plt.ylabel('Numero Di Valori Null')
+        plt.xlabel('Nome Colonne')
         plt.xticks(rotation=45)
+
+        plt.subplots_adjust(bottom=0.2)
         plt.show()
 
     def plot_null_distribution(self):
-        plt.figure(figsize=(12, 8))
+        plt.figure(figsize=(10, 6))
         sns.heatmap(self.df.isnull(), cbar=False, cmap='viridis')
         plt.title('Distribuzione dei Valori Nulli')
+        plt.subplots_adjust(bottom=0.2)
+        plt.xticks(rotation=45)
+        plt.ylabel('Righe Con Valori NULL')
+        plt.xlabel('Nome Colonne')
         plt.show()
 
     def drop_nulls(self):
@@ -54,6 +61,9 @@ def main():
 
     cleaner.plot_nulls()
     cleaner.plot_null_distribution()
+
+    df = cleaner.drop_nulls()
+    cleaner.save_cleaned_data(os.path.join(current_dir, '..', 'dataset', 'cleaned_netflix_titles.csv'))
 
 if __name__ == '__main__':
     main()
