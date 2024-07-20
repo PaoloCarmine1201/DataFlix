@@ -1,0 +1,15 @@
+.logo {
+    width: 300px;
+    height: auto;
+}
+
+.logoContainer {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+}
+
+
+.grassetto {
+    font-weight: bolder;
+}
