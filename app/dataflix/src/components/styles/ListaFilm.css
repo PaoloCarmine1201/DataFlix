@@ -1,0 +1,19 @@
+.containerCards {
+    display: flex;
+    flex-direction: row;
+}
+
+.grassetto {
+    font-weight: bolder;
+}
+
+.containerInput {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.inputText {
+    width: 49% !important;
+}
