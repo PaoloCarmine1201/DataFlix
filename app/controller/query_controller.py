@@ -63,3 +63,33 @@ def group_by_country():
 def get_release_years():
     result = manager.get_release_years()
     return jsonify(result)
+
+@user_bp.route("/get_top10_number_actors", methods=['POST'])
+def get_top10_number_actors():
+    result = manager.get_top10_number_actors()
+    return jsonify(result)
+
+@user_bp.route("/get_new_added", methods=['POST'])
+def get_new_added():
+    result = manager.get_new_added()
+    return jsonify(result)
+
+@user_bp.route("/series/get_avg_seasons", methods=['POST'])
+def get_avg_seasons():
+    result = manager.get_avg_seasons()
+    return jsonify(result)
+
+@user_bp.route("/get_top10_number_directors", methods=['POST'])
+def get_top10_number_directors():
+    result = manager.get_top10_number_directors()
+    return jsonify(result)
+
+@user_bp.route("/group_by_release_year", methods=['POST'])
+def group_by_release_year():
+    result = manager.group_by_release_year()
+    return jsonify(result)
+
+@user_bp.route("/group_by_type", methods=['POST'])
+def group_by_type():
+    result = manager.group_by_type()
+    return jsonify(result)
