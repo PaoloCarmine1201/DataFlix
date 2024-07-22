@@ -15,6 +15,7 @@ function ListaFilm() {
         fullname: '',
         limit: 80
     });
+    const [noContentFound, setNoContentFound] = useState(false); // Nuovo stato
 
     const handleShowModal = (movie) => {
         setSelectedContent(movie);
@@ -43,6 +44,7 @@ function ListaFilm() {
 
                 const data = await response.json();
                 setContenuti(data);
+                setNoContentFound(data.length === 0); // Aggiorna lo stato in base ai dati
             } catch (error) {
                 console.error('Errore nella fetch dei contenuti:', error);
             }
@@ -131,9 +133,14 @@ function ListaFilm() {
                 </select>
             </div>
 
-            {contenuti.map((contenuto, index) => (
-                <CardFilm key={index} elemento={contenuto} onShowModal={handleShowModal} />
-            ))}
+            {/* Condizione per visualizzare "Nessun contenuto trovato" */}
+            {noContentFound ? (
+                <h1 className="text-center">Nessun contenuto trovato</h1>
+            ) : (
+                contenuti.map((contenuto, index) => (
+                    <CardFilm key={index} elemento={contenuto} onShowModal={handleShowModal} />
+                ))
+            )}
 
             <Modal show={showModal} onHide={handleCloseModal} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
                 <Modal.Header closeButton>

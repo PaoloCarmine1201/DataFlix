@@ -5,6 +5,8 @@ import logo from './images/logo.png'
 import './components/styles/Home.css'
 import ModalGraficoTorta from './components/ModalGraficoTorta';
 import ModalGraficoBarre from './components/ModalGraficoBarre';
+import ModalTopActors from './components/ModalTopActorsDirectors';
+import ModalContenutiPerAnno from './components/ModalContenutiPerAnno';
 
 
 function App() {
@@ -19,7 +21,8 @@ function App() {
             <span><span className='grassetto'>Tecnologie Usate: </span>MongoDB, React JS, Flask, Bootstrap</span> <br/><br/>
             <ModalGraficoTorta/>
             <ModalGraficoBarre/>
-            
+            <ModalTopActors/>
+            <ModalContenutiPerAnno/>
             <ListaFilm />
         </div>
       </>
