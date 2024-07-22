@@ -12,7 +12,8 @@ function ListaFilm() {
         year: '',
         type: 'Movie',
         title: '',
-        actors: ''
+        fullname: '',
+        limit: 80
     });
 
     const handleShowModal = (movie) => {
@@ -99,9 +100,9 @@ function ListaFilm() {
                     type="text"
                     className="form-control inputText"
                     id="actorsSearch"
-                    name="actors"
+                    name="fullname"
                     placeholder="Ricerca per attori/regista"
-                    value={searchParams.actors}
+                    value={searchParams.fullname}
                     onChange={handleInputChange}
                 />
                 <select
@@ -145,6 +146,8 @@ function ListaFilm() {
                     <span><span className='grassetto'>Rating: </span>{selectedContent?.rating}</span> <br/><br/>
                     <span><span className='grassetto'>Duration: </span>{selectedContent?.duration}</span> <br/><br/>
                     <span><span className='grassetto'>Date added on Netflix: </span>{selectedContent?.date_added}</span> <br/><br/>
+                    <span><span className='grassetto'>Director: </span>{selectedContent?.director}</span> <br/><br/>
+                    <span><span className='grassetto'>Cast: </span>{selectedContent?.cast}</span> <br/><br/>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseModal}>

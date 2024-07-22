@@ -1,42 +1,68 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { BarChart } from '@mui/x-charts/BarChart';
+import './styles/ModalGraficoBarre.css';
 
 function ModalGraficoBarre() {
     const [show, setShow] = useState(false);
+    const [data, setData] = useState([]);
+    const [countries, setCountries] = useState([]);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
-  return (
-    <>
-        <Button variant="primary" className='mb-3 me-3' onClick={handleShow}>
-            Grafico divisione tra film e serie tv
-        </Button>
+    const fetchData = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:5000/group_by_country', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            });
+            const result = await response.json();
+            const counts = result.map(item => item.count);
+            const countryNames = result.map(item => item.country_name);
+            setData(counts);
+            setCountries(countryNames);
+        } catch (error) {
+            console.error('Errore durante il fetch:', error);
+        }
+    };
 
-        <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-            <Modal.Title>Grafico divisione tra film e serie tv</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+    useEffect(() => {
+        if (show) {
+            fetchData();
+        }
+    }, [show]);
 
-            <BarChart
-                xAxis={[{ scaleType: 'band', data: ['Italy', 'France', 'USA', 'Germany', 'UK'] }]}
-                series={[{ data: [20,10,13, 2, 7] }]}
-                width={500}
-                height={300}
-            />
-
-            </Modal.Body>
-            <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-                Close
+    return (
+        <>
+            <Button variant="primary" className='mb-3 me-3' onClick={handleShow}>
+                Contenuti per nazione
             </Button>
-            </Modal.Footer>
-        </Modal>
-    </>
-  );
+
+            <Modal show={show} onHide={handleClose} dialogClassName="modal-90w">
+                <Modal.Header closeButton>
+                    <Modal.Title>Contenuti per nazione</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className='modal-body-barGraph'>
+                    <BarChart
+                        xAxis={[{ scaleType: 'band', data: countries }]}
+                        series={[{ data: data }]}
+                        width={1500}
+                        height={500}
+                    />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    );
 }
 
 export default ModalGraficoBarre;
