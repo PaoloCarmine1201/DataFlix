@@ -1,3 +1,7 @@
 /ambiente/*
 /venv/*
 ambiente/pip/*
+__pycache__/*
+app/__pycache__/*
+app/controller/__pycache__/*
+app/service/__pycache__/*
