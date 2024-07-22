@@ -14,6 +14,7 @@ def search_entries():
     limit = data.get("limit")
     fullname = data.get("fullname")
     title = data.get("title")
+    listed_in = data.get("listed_in")  # Nuovo parametro
 
     # Costruisce il dizionario dei parametri per la funzione del manager
     params = {}
@@ -40,6 +41,9 @@ def search_entries():
     
     if title:
         params["title"] = title
+    
+    if listed_in:
+        params["listed_in"] = listed_in  # Aggiungi il parametro listed_in
     
     # Chiama la funzione manager per ottenere i risultati
     result = manager.find_entries(params)

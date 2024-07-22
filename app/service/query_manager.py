@@ -60,6 +60,18 @@ def find_entries(params):
         else:
             query = title_query
     
+    if 'listed_in' in params:
+        if isinstance(params['listed_in'], list):
+            listed_in_query = {"listed_in": {"$in": params['listed_in']}}
+        else:
+            listed_in_query = {"listed_in": params['listed_in']}
+        
+        # Unisci listed_in_query con la query esistente usando $and
+        if query:
+            query = {"$and": [query, listed_in_query]}
+        else:
+            query = listed_in_query
+    
     # Costruisci la query
     if limit:
         cursor = collection.find(query).limit(limit)
