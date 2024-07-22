@@ -23,36 +23,6 @@ def convert_objectid_to_str(document):
             if isinstance(item, dict):
                 convert_objectid_to_str(item)
 
-def find_all_movie():
-    query = collection.find({"type": "Movie"})
-    result = list(query)
-    convert_objectid_to_str(result)  # Converti ObjectId in stringa
-    return result
-
-def find_all_series():
-    query = collection.find({"type": "TV Show"})
-    result = list(query)
-    convert_objectid_to_str(result)  # Converti ObjectId in stringa
-    return result
-
-def get_first_80_entries():
-    query = collection.find().limit(80)
-    result = list(query)
-    convert_objectid_to_str(result)
-    return result
-
-def get_first_80_movies():
-    query = collection.find({"type": "Movie"}).limit(80)
-    result = list(query)
-    convert_objectid_to_str(result)
-    return result
-
-def get_first_80_series():
-    query = collection.find({"type": "TV Show"}).limit(80)
-    result = list(query)
-    convert_objectid_to_str(result)
-    return result
-
 # Utilizzo un'espressione regolare con l'opzione 'i' per la ricerca case-insensitive
 def find_by_title(title):
     query = {"title": {"$regex": title, "$options": "i"}}
@@ -80,10 +50,29 @@ def find_by_person(fullname):
     convert_objectid_to_str(result)
     return result
 
-def find_by_year(year):
-    query = {"release_year": year}
-    result = collection.find(query)
-    result = list(result)
+def find_entries(params):
+    # Inizializza la query vuota e i parametri opzionali
+    query = {}
+    limit = None
+
+    # Gestisci i parametri opzionali
+    if 'year' in params:
+        query["release_year"] = int(params['year'])
+
+    if 'type' in params:
+        query["type"] = params['type']
+    
+    if 'limit' in params:
+        limit = int(params['limit'])
+    
+    # Costruisci la query
+    if limit:
+        cursor = collection.find(query).limit(limit)
+    else:
+        cursor = collection.find(query)
+    
+    # Converti il cursore in lista e modifica ObjectId
+    result = list(cursor)
     convert_objectid_to_str(result)
 
     return result

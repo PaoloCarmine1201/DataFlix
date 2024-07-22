@@ -3,31 +3,6 @@ import app.service.query_manager as manager
 
 user_bp = Blueprint('user', __name__)
 
-@user_bp.route("/movie/findAllMovie", methods=['POST'])
-def find_all_movie():
-    result = manager.find_all_movie()
-    return jsonify(result)
-
-@user_bp.route("/series/findAllSeries", methods=['POST'])
-def find_all_series():
-    result = manager.find_all_series()
-    return jsonify(result)
-
-@user_bp.route("/get_first_80_entries", methods=['POST'])
-def get_first_80_entries():
-    result = manager.get_first_80_entries()
-    return jsonify(result)
-
-@user_bp.route("/get_first_80_movies", methods=['POST'])
-def get_first_80_movies():
-    result = manager.get_first_80_movies()
-    return jsonify(result)
-
-@user_bp.route("/get_first_80_series", methods=['POST'])
-def get_first_80_series():
-    result = manager.get_first_80_series()
-    return jsonify(result)
-
 @user_bp.route("/find_by_title", methods=['POST'])
 def find_by_title():
     data = request.get_json()
@@ -51,19 +26,41 @@ def find_by_person():
         return jsonify(result)
     else:
         return jsonify({"error": "Fullname is required"}), 400
-    
-@user_bp.route("/find_by_year", methods=['POST'])
-def find_by_year():
+
+@user_bp.route("/search_entries", methods=['POST'])
+def search_entries():
+    # Recupera i parametri dalla richiesta JSON
     data = request.get_json()
+    
+    # Verifica che i parametri siano presenti e corretti
     year = data.get("year")
+    type = data.get("type")
+    limit = data.get("limit")
+    
+    # Costruisce il dizionario dei parametri per la funzione del manager
+    params = {}
     
     if year:
-        year = int(year)
-        result = manager.find_by_year(year)
-        return jsonify(result)
-    else:
-        return jsonify({"error": "Year is required"}), 400
+        try:
+            params["year"] = int(year)
+        except ValueError:
+            return jsonify({"error": "Invalid year format"}), 400
     
+    if type:
+        if type not in ["Movie", "TV Show"]:
+            return jsonify({"error": "Invalid type. Valid types are 'Movie' and 'TV Show'."}), 400
+        params["type"] = type
+
+    if limit:
+        try:
+            params["limit"] = int(limit)
+        except ValueError:
+            return jsonify({"error": "Invalid limit format"}), 400
+    
+    # Chiama la funzione manager per ottenere i risultati
+    result = manager.find_entries(params)
+    return jsonify(result)
+
 @user_bp.route("/group_by_country", methods=['POST'])
 def group_by_country():
     result = manager.group_by_country()
