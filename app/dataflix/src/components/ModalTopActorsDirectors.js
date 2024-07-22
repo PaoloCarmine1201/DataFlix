@@ -87,7 +87,7 @@ function ModalTopActorsDirectors() {
                 </Modal.Header>
                 <Modal.Body>
                     <Tabs defaultActiveKey="actors" id="uncontrolled-tab-example" className="mb-3">
-                        <Tab eventKey="actors" title="Top 10 Attori">
+                        <Tab eventKey="actors" title="Top 10 titoli con più attori">
                             <BarChart
                                 xAxis={[{ scaleType: 'band', data: actorsTitles }]}
                                 series={[
@@ -97,7 +97,7 @@ function ModalTopActorsDirectors() {
                                 height={500}
                             />
                         </Tab>
-                        <Tab eventKey="directors" title="Top 10 Registi">
+                        <Tab eventKey="directors" title="Top 10 titoli con più registi">
                             <BarChart
                                 xAxis={[{ scaleType: 'band', data: directorsTitles }]}
                                 series={[
