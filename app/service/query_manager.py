@@ -23,33 +23,6 @@ def convert_objectid_to_str(document):
             if isinstance(item, dict):
                 convert_objectid_to_str(item)
 
-# Utilizzo un'espressione regolare con l'opzione 'i' per la ricerca case-insensitive
-def find_by_title(title):
-    query = {"title": {"$regex": title, "$options": "i"}}
-    result = collection.find(query)
-    result = list(result)
-    convert_objectid_to_str(result)
-    return result
-
-def find_by_title(title):
-    query = {"title": {"$regex": title, "$options": "i"}}
-    result = collection.find(query)
-    result = list(result)
-    convert_objectid_to_str(result)
-    return result
-
-def find_by_person(fullname):
-    query = {
-        "$or": [
-            {"director": {"$regex": fullname, "$options": "i"}},
-            {"cast": {"$regex": fullname, "$options": "i"}}
-        ]
-    }
-    result = collection.find(query)
-    result = list(result)
-    convert_objectid_to_str(result)
-    return result
-
 def find_entries(params):
     # Inizializza la query vuota e i parametri opzionali
     query = {}
@@ -64,6 +37,27 @@ def find_entries(params):
     
     if 'limit' in params:
         limit = int(params['limit'])
+
+    if 'fullname' in params:
+        fullname_query = {
+            "$or": [
+                {"director": {"$regex": params['fullname'], "$options": "i"}},
+                {"cast": {"$regex": params['fullname'], "$options": "i"}}
+            ]
+        }
+        # Unisci fullname_query con la query esistente usando $and
+        if query:
+            query = {"$and": [query, fullname_query]}
+        else:
+            query = fullname_query
+
+    if 'title' in params:
+        title_query = {"title": {"$regex": params['title'], "$options": "i"}}
+        # Unisci title_query con la query esistente usando $and
+        if query:
+            query = {"$and": [query, title_query]}
+        else:
+            query = title_query
     
     # Costruisci la query
     if limit:
