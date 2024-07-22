@@ -18,6 +18,16 @@ def get_first_80_entries():
     result = manager.get_first_80_entries()
     return jsonify(result)
 
+@user_bp.route("/get_first_80_movies", methods=['POST'])
+def get_first_80_movies():
+    result = manager.get_first_80_movies()
+    return jsonify(result)
+
+@user_bp.route("/get_first_80_series", methods=['POST'])
+def get_first_80_series():
+    result = manager.get_first_80_series()
+    return jsonify(result)
+
 @user_bp.route("/find_by_title", methods=['POST'])
 def find_by_title():
     data = request.get_json()

@@ -41,6 +41,18 @@ def get_first_80_entries():
     convert_objectid_to_str(result)
     return result
 
+def get_first_80_movies():
+    query = collection.find({"type": "Movie"}).limit(80)
+    result = list(query)
+    convert_objectid_to_str(result)
+    return result
+
+def get_first_80_series():
+    query = collection.find({"type": "TV Show"}).limit(80)
+    result = list(query)
+    convert_objectid_to_str(result)
+    return result
+
 # Utilizzo un'espressione regolare con l'opzione 'i' per la ricerca case-insensitive
 def find_by_title(title):
     query = {"title": {"$regex": title, "$options": "i"}}
