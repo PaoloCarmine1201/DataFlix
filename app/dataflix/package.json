@@ -15,6 +15,7 @@
     "react-bootstrap": "^2.10.4",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
+    "react-select": "^5.8.0",
     "react-simple-star-rating": "^5.1.7",
     "web-vitals": "^2.1.4"
   },
