@@ -69,11 +69,6 @@ def get_top10_number_actors():
     result = manager.get_top10_number_actors()
     return jsonify(result)
 
-@user_bp.route("/get_new_added", methods=['POST'])
-def get_new_added():
-    result = manager.get_new_added()
-    return jsonify(result)
-
 @user_bp.route("/series/get_avg_seasons", methods=['POST'])
 def get_avg_seasons():
     result = manager.get_avg_seasons()

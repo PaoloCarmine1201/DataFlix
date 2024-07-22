@@ -80,6 +80,16 @@ def find_by_year(year):
 def group_by_country():
     pipeline = [
         {
+            "$project": {
+                "country": {
+                    "$split": ["$country", ", "]  # Divide la stringa dei paesi in un array
+                }
+            }
+        },
+        {
+            "$unwind": "$country"  # Decomprime l'array dei paesi in documenti separati
+        },
+        {
             "$group": {
                 "_id": "$country",       # Raggruppa per paese
                 "count": {"$sum": 1}     # Conta il numero di documenti per ciascun paese
@@ -120,26 +130,6 @@ def get_top10_number_actors():
         },
         {
             "$limit": 10
-        }
-    ]
-
-    results = list(collection.aggregate(pipeline))
-    convert_objectid_to_str(results)
-
-    return results
-
-#Query che restituisce i titoli aggiunti su Netflix negli ultimi 6 mesi
-def get_new_added():
-    seven_day_ago = datetime.now() - timedelta(days=7)
-
-    pipeline = [
-        {
-            "$match": {
-                "date_added": {"$gte": seven_day_ago.strftime('%B %d, %Y')}
-            }
-        },
-        {
-            "$sort": {"date_added": -1}
         }
     ]
 
