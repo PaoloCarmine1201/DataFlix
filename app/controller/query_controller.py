@@ -3,57 +3,52 @@ import app.service.query_manager as manager
 
 user_bp = Blueprint('user', __name__)
 
-@user_bp.route("/movie/findAllMovie", methods=['POST'])
-def find_all_movie():
-    result = manager.find_all_movie()
-    return jsonify(result)
-
-@user_bp.route("/series/findAllSeries", methods=['POST'])
-def find_all_series():
-    result = manager.find_all_series()
-    return jsonify(result)
-
-@user_bp.route("/get_first_80_entries", methods=['POST'])
-def get_first_80_entries():
-    result = manager.get_first_80_entries()
-    return jsonify(result)
-
-@user_bp.route("/find_by_title", methods=['POST'])
-def find_by_title():
+@user_bp.route("/search_entries", methods=['POST'])
+def search_entries():
+    # Recupera i parametri dalla richiesta JSON
     data = request.get_json()
-    title = data.get("title")
     
-    if title:
-        title = str.lower(title)
-        result = manager.find_by_title(title)
-        return jsonify(result)
-    else:
-        return jsonify({"error": "Title is required"}), 400
-
-@user_bp.route("/find_by_person", methods=['POST'])
-def find_by_person():
-    data = request.get_json()
-    fullname = data.get("fullname")
-    
-    if fullname:
-        fullname = str.lower(fullname)
-        result = manager.find_by_person(fullname)
-        return jsonify(result)
-    else:
-        return jsonify({"error": "Fullname is required"}), 400
-    
-@user_bp.route("/find_by_year", methods=['POST'])
-def find_by_year():
-    data = request.get_json()
+    # Verifica che i parametri siano presenti e corretti
     year = data.get("year")
+    type = data.get("type")
+    limit = data.get("limit")
+    fullname = data.get("fullname")
+    title = data.get("title")
+    listed_in = data.get("listed_in")  # Nuovo parametro
+
+    # Costruisce il dizionario dei parametri per la funzione del manager
+    params = {}
     
     if year:
-        year = int(year)
-        result = manager.find_by_year(year)
-        return jsonify(result)
-    else:
-        return jsonify({"error": "Year is required"}), 400
+        try:
+            params["year"] = int(year)
+        except ValueError:
+            return jsonify({"error": "Invalid year format"}), 400
     
+    if type:
+        if type not in ["Movie", "TV Show"]:
+            return jsonify({"error": "Invalid type. Valid types are 'Movie' and 'TV Show'."}), 400
+        params["type"] = type
+
+    if limit:
+        try:
+            params["limit"] = int(limit)
+        except ValueError:
+            return jsonify({"error": "Invalid limit format"}), 400
+    
+    if fullname:
+        params["fullname"] = fullname
+    
+    if title:
+        params["title"] = title
+    
+    if listed_in:
+        params["listed_in"] = listed_in  # Aggiungi il parametro listed_in
+    
+    # Chiama la funzione manager per ottenere i risultati
+    result = manager.find_entries(params)
+    return jsonify(result)
+
 @user_bp.route("/group_by_country", methods=['POST'])
 def group_by_country():
     result = manager.group_by_country()
@@ -87,4 +82,9 @@ def group_by_release_year():
 @user_bp.route("/group_by_type", methods=['POST'])
 def group_by_type():
     result = manager.group_by_type()
+    return jsonify(result)
+
+@user_bp.route("/group_by_genre", methods=['POST'])
+def group_by_genre():
+    result = manager.group_by_genre()
     return jsonify(result)

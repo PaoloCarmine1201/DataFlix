@@ -24,55 +24,62 @@ def convert_objectid_to_str(document):
             if isinstance(item, dict):
                 convert_objectid_to_str(item)
 
-def find_all_movie():
-    query = collection.find({"type": "Movie"})
-    result = list(query)
-    convert_objectid_to_str(result)  # Converti ObjectId in stringa
-    return result
+def find_entries(params):
+    # Inizializza la query vuota e i parametri opzionali
+    query = {}
+    limit = None
 
-def find_all_series():
-    query = collection.find({"type": "TV Show"})
-    result = list(query)
-    convert_objectid_to_str(result)  # Converti ObjectId in stringa
-    return result
+    # Gestisci i parametri opzionali
+    if 'year' in params:
+        query["release_year"] = int(params['year'])
 
-def get_first_80_entries():
-    query = collection.find().limit(80)
-    result = list(query)
-    convert_objectid_to_str(result)
-    return result
+    if 'type' in params:
+        query["type"] = params['type']
+    
+    if 'limit' in params:
+        limit = int(params['limit'])
 
-# Utilizzo un'espressione regolare con l'opzione 'i' per la ricerca case-insensitive
-def find_by_title(title):
-    query = {"title": {"$regex": title, "$options": "i"}}
-    result = collection.find(query)
-    result = list(result)
-    convert_objectid_to_str(result)
-    return result
+    if 'fullname' in params:
+        fullname_query = {
+            "$or": [
+                {"director": {"$regex": params['fullname'], "$options": "i"}},
+                {"cast": {"$regex": params['fullname'], "$options": "i"}}
+            ]
+        }
+        # Unisci fullname_query con la query esistente usando $and
+        if query:
+            query = {"$and": [query, fullname_query]}
+        else:
+            query = fullname_query
 
-def find_by_title(title):
-    query = {"title": {"$regex": title, "$options": "i"}}
-    result = collection.find(query)
-    result = list(result)
-    convert_objectid_to_str(result)
-    return result
-
-def find_by_person(fullname):
-    query = {
-        "$or": [
-            {"director": {"$regex": fullname, "$options": "i"}},
-            {"cast": {"$regex": fullname, "$options": "i"}}
-        ]
-    }
-    result = collection.find(query)
-    result = list(result)
-    convert_objectid_to_str(result)
-    return result
-
-def find_by_year(year):
-    query = {"release_year": year}
-    result = collection.find(query)
-    result = list(result)
+    if 'title' in params:
+        title_query = {"title": {"$regex": params['title'], "$options": "i"}}
+        # Unisci title_query con la query esistente usando $and
+        if query:
+            query = {"$and": [query, title_query]}
+        else:
+            query = title_query
+    
+    if 'listed_in' in params:
+        if isinstance(params['listed_in'], list):
+            listed_in_query = {"listed_in": {"$in": params['listed_in']}}
+        else:
+            listed_in_query = {"listed_in": params['listed_in']}
+        
+        # Unisci listed_in_query con la query esistente usando $and
+        if query:
+            query = {"$and": [query, listed_in_query]}
+        else:
+            query = listed_in_query
+    
+    # Costruisci la query
+    if limit:
+        cursor = collection.find(query).limit(limit)
+    else:
+        cursor = collection.find(query)
+    
+    # Converti il cursore in lista e modifica ObjectId
+    result = list(cursor)
     convert_objectid_to_str(result)
 
     return result
@@ -222,6 +229,37 @@ def group_by_type():
         },
         {
             "$sort": {"count": -1}  # Ordina per conteggio in ordine decrescente
+        }
+    ]
+
+    results = list(collection.aggregate(pipeline))
+    convert_objectid_to_str(results)
+
+    return results
+
+def group_by_genre():
+    pipeline = [
+        {
+            "$addFields": {
+                "genres": {
+                    "$split": ["$listed_in", ", "]  # Dividi i generi in base a ", "
+                }
+            }
+        },
+        {
+            "$unwind": "$genres"  # Esplodi i generi in righe separate
+        },
+        {
+            "$group": {
+                "_id": None,
+                "unique_genres": {"$addToSet": "$genres"}  # Crea un insieme di generi unici
+            }
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "unique_genres": 1  # Includi solo il campo unique_genres nel risultato
+            }
         }
     ]
 
