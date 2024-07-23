@@ -62,16 +62,17 @@ def find_entries(params):
     
     if 'listed_in' in params:
         if isinstance(params['listed_in'], list):
-            listed_in_query = {"listed_in": {"$in": params['listed_in']}}
+            listed_in_queries = [{"listed_in": {"$regex": genre, "$options": "i"}} for genre in params['listed_in']]
+            listed_in_query = {"$or": listed_in_queries}
         else:
-            listed_in_query = {"listed_in": params['listed_in']}
+            listed_in_query = {"listed_in": {"$regex": params['listed_in'], "$options": "i"}}
         
         # Unisci listed_in_query con la query esistente usando $and
         if query:
             query = {"$and": [query, listed_in_query]}
         else:
             query = listed_in_query
-    
+
     # Costruisci la query
     if limit:
         cursor = collection.find(query).limit(limit)
@@ -83,6 +84,7 @@ def find_entries(params):
     convert_objectid_to_str(result)
 
     return result
+
 
 def group_by_country():
     pipeline = [

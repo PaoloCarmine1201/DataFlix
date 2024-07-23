@@ -43,11 +43,15 @@ def search_entries():
         params["title"] = title
     
     if listed_in:
-        params["listed_in"] = listed_in  # Aggiungi il parametro listed_in
+        if not isinstance(listed_in, list):
+            return jsonify({"error": "Invalid listed_in format. It should be an array."}), 400
+        # Converti l'array in una stringa separata da virgole
+        params["listed_in"] = listed_in
     
     # Chiama la funzione manager per ottenere i risultati
     result = manager.find_entries(params)
     return jsonify(result)
+
 
 @user_bp.route("/group_by_country", methods=['POST'])
 def group_by_country():

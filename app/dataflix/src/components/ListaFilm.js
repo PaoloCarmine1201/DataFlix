@@ -193,7 +193,7 @@ function ListaFilm() {
                 </select>
 
                 {/* Componente Select per generi */}
-                <div className="genre-select">
+                <div className="genre-select inputText">
                     <Select
                         closeMenuOnSelect={false}
                         components={animatedComponents}
