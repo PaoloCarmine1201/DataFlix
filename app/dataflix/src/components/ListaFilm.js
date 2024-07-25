@@ -187,7 +187,7 @@ function ListaFilm() {
                     value={searchParams.type}
                     onChange={handleInputChange}
                 >
-                    <option disabled value="">Tipo di contenuto</option>
+                    <option selected value="">Tipo di contenuto</option>
                     <option value="Movie">Film</option>
                     <option value="TV Show">Serie</option>
                 </select>
